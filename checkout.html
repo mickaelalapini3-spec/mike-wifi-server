@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Paiement - MICKE WiFi</title>
+    <style>
+        body { font-family: Arial, sans-serif; background-color: #f4f6f9; padding: 20px; text-align: center; }
+        .card { background: white; max-width: 400px; margin: 40px auto; padding: 20px; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        .btn { background: #0056b3; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; width: 100%; font-size: 1rem; margin-top: 15px; }
+        input { width: 100%; padding: 10px; margin-top: 10px; box-sizing: border-box; border: 1px solid #ccc; border-radius: 5px; }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h2 style="color: #0056b3;">Paiement FedaPay</h2>
+        <p id="plan-info" style="margin-top: 10px; font-weight: bold;"></p>
+        <form onsubmit="alert('Redirection vers FedaPay...'); return false;">
+            <input type="text" placeholder="Nom & Prénom" required>
+            <input type="email" placeholder="Adresse E-mail" required>
+            <input type="tel" placeholder="Numéro de téléphone (MTN/Moov/Celtiis)" required>
+            <button type="submit" class="btn">Procéder au paiement</button>
+        </form>
+        <br>
+        <a href="index.html" style="color: #666; font-size: 0.85rem;">← Retour à l'accueil</a>
+    </div>
+
+    <script>
+        // Récupération des informations du forfait sélectionné
+        const planName = sessionStorage.getItem('selectedPlanName') || 'Non spécifié';
+        const planPrice = sessionStorage.getItem('selectedPlanPrice') || '0';
+        document.getElementById('plan-info').innerText = `Forfait : ${planName} (${planPrice} FCFA)`;
+    </script>
+</body>
+</html>

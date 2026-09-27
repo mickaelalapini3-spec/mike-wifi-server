@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MICKE WiFi - Paiement Validé</title>
+    <!-- Tailwind CSS pour un design moderne et responsive identique à l'index -->
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-900 text-slate-100 min-h-screen flex flex-col justify-between">
+
+    <!-- En-tête (Identique à index.html) -->
+    <header class="bg-slate-800 border-b border-slate-700 py-4 px-6 text-center shadow-md">
+        <h1 class="text-2xl font-bold tracking-wider text-emerald-400">⚡ MICKE WiFi</h1>
+        <p class="text-xs text-slate-400 mt-1">Votre passerelle internet sécurisée</p>
+    </header>
+
+    <!-- Contenu Principal -->
+    <main class="max-w-xl w-full mx-auto p-4 sm:p-6 my-auto">
+        
+        <div class="bg-slate-800 border border-slate-700 rounded-xl p-6 sm:p-8 shadow-xl text-center">
+            
+            <!-- Icône de succès -->
+            <div class="inline-flex items-center justify-center w-16 h-16 bg-emerald-500/10 text-emerald-400 rounded-full text-3xl mb-4">
+                🎉
+            </div>
+
+            <h2 class="text-xl font-bold text-emerald-300 mb-1">Paiement Validé !</h2>
+            <p class="text-xs text-slate-400 mb-6">Merci pour votre achat. Vos accès pour naviguer sur le réseau sont prêts :</p>
+
+            <!-- Carte des identifiants -->
+            <div class="bg-slate-900 border border-slate-700 rounded-lg p-5 text-left mb-6 space-y-3">
+                <div class="flex justify-between items-center border-b border-slate-800 pb-2">
+                    <span class="text-xs text-slate-400 font-medium">Forfait :</span>
+                    <span class="text-sm font-semibold text-white" id="packageName">-</span>
+                </div>
+                <div class="flex justify-between items-center border-b border-slate-800 pb-2">
+                    <span class="text-xs text-slate-400 font-medium">Identifiant :</span>
+                    <span class="text-base font-bold text-emerald-400 tracking-wide font-mono" id="username">-</span>
+                </div>
+                <div class="flex justify-between items-center">
+                    <span class="text-xs text-slate-400 font-medium">Mot de passe :</span>
+                    <span class="text-base font-bold text-emerald-400 tracking-wide font-mono" id="password">-</span>
+                </div>
+            </div>
+
+            <!-- Boutons d'action -->
+            <div class="space-y-3">
+                <button onclick="autoConnect()" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-medium py-3 rounded-lg text-sm transition-all shadow-lg shadow-emerald-600/20 flex items-center justify-center gap-2">
+                    <span>📶</span> Se connecter automatiquement
+                </button>
+                
+                <button onclick="copyCredentials()" class="w-full bg-slate-700 hover:bg-slate-600 text-slate-200 font-medium py-2.5 rounded-lg text-sm transition-all border border-slate-600 flex items-center justify-center gap-2">
+                    <span>📋</span> Copier mes accès
+                </button>
+            </div>
+
+            <!-- Alerte Capture d'écran -->
+            <div class="mt-6 bg-amber-500/10 border border-amber-500/20 rounded-lg p-3 text-amber-300 text-xs font-medium flex items-center justify-center gap-2">
+                <span>📸</span> Pensez à faire une capture d'écran de cette page !
+            </div>
+
+        </div>
+    </main>
+
+    <!-- Pied de page (Identique à index.html) -->
+    <footer class="text-center py-4 text-xs text-slate-500 border-t border-slate-800">
+        Propulsé par <span class="text-slate-400 font-semibold">MICKE TECHNOLOGY</span> &copy; 2026
+    </footer>
+
+    <!-- Script de récupération des paramètres et actions -->
+    <script>
+        // Récupération sécurisée des paramètres de l'URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const username = urlParams.get('username') || 'Inconnu';
+        const password = urlParams.get('pass') || urlParams.get('password') || 'Inconnu';
+        const packageName = urlParams.get('package') || urlParams.get('pkg') || 'Forfait Wi-Fi';
+
+        // Affichage dynamique
+        document.getElementById('username').textContent = username;
+        document.getElementById('password').textContent = password;
+        document.getElementById('packageName').textContent = decodeURIComponent(packageName);
+
+        // Fonction de copie
+        function copyCredentials() {
+            const textToCopy = `MICKE WiFi\nIdentifiant: ${username}\nMot de passe: ${password}\nForfait: ${packageName}`;
+            navigator.clipboard.writeText(textToCopy).then(() => {
+                alert("✅ Accès copiés dans le presse-papier !");
+            }).catch(err => {
+                alert("❌ Impossible de copier les accès.");
+            });
+        }
+
+        // Fonction de connexion automatique
+        function autoConnect() {
+            if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+                alert("[Simulation Locale] Connexion réussie avec le compte " + username + " ! Redirection vers Internet...");
+                window.location.href = "https://www.google.com";
+                return;
+            }
+
+            // En production sur le routeur physique MikroTik
+            const mikrotikGateway = `http://192.168.88.1/login?username=${encodeURIComponent(username)}&password=${encodeURIComponent(password)}`;
+            window.location.href = mikrotikGateway;
+        }
+    </script>
+</body>
+</html>

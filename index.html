@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MICKE WiFi - Connexion & Achat de Forfaits</title>
+    <!-- Tailwind CSS pour un design moderne et responsive -->
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-900 text-slate-100 min-h-screen flex flex-col justify-between">
+
+    <!-- En-tête -->
+    <header class="bg-slate-800 border-b border-slate-700 py-4 px-6 text-center shadow-md">
+        <h1 class="text-2xl font-bold tracking-wider text-emerald-400">⚡ MICKE WiFi</h1>
+        <p class="text-xs text-slate-400 mt-1">Connectez-vous ou achetez un forfait internet instantanément</p>
+    </header>
+
+    <!-- Contenu Principal -->
+    <main class="max-w-4xl w-full mx-auto p-4 sm:p-6 my-auto">
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            
+            <!-- SECTION 1 : Connexion avec un ticket existant -->
+            <div class="bg-slate-800 border border-slate-700 rounded-xl p-6 shadow-xl flex flex-col justify-between">
+                <div>
+                    <h2 class="text-lg font-semibold text-emerald-300 mb-2">🎟️ J'ai déjà un ticket</h2>
+                    <p class="text-xs text-slate-400 mb-4">Entrez vos identifiants fournis au guichet ou reçus par SMS/Web.</p>
+                    
+                    <form action="http://192.168.88.1/login" method="POST" class="space-y-4">
+                        <!-- Redirection MikroTik standard -->
+                        <input type="hidden" name="dst" value="http://google.com">
+                        
+                        <div>
+                            <label class="block text-xs font-medium text-slate-300 mb-1">Nom d'utilisateur / Code</label>
+                            <input type="text" name="username" required placeholder="Ex: EXP-12345" 
+                                class="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-lg text-sm text-white focus:outline-none focus:border-emerald-500">
+                        </div>
+                        
+                        <div>
+                            <label class="block text-xs font-medium text-slate-300 mb-1">Mot de passe</label>
+                            <input type="password" name="password" required placeholder="Ex: 4321" 
+                                class="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-lg text-sm text-white focus:outline-none focus:border-emerald-500">
+                        </div>
+
+                        <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-medium py-2.5 rounded-lg text-sm transition-all shadow-lg shadow-emerald-600/20">
+                            Se connecter à Internet
+                        </button>
+                    </form>
+                </div>
+
+                <div class="mt-6 pt-4 border-t border-slate-700/60">
+                    <p class="text-xs text-slate-400 text-center">
+                        Avez-vous perdu votre ticket en ligne ? 
+                        <span id="btn-retrouver" class="text-emerald-400 cursor-pointer hover:underline">Retrouver mon ticket</span>
+                    </p>
+                </div>
+            </div>
+
+            <!-- SECTION 2 : Achat d'un forfait en ligne (Mobile Money via FedaPay) -->
+            <div class="bg-slate-800 border border-slate-700 rounded-xl p-6 shadow-xl flex flex-col justify-between">
+                <div>
+                    <h2 class="text-lg font-semibold text-emerald-300 mb-2">💳 Acheter un Forfait</h2>
+                    <p class="text-xs text-slate-400 mb-4">Choisissez un forfait de notre catalogue et payez par Mobile Money.</p>
+
+                    <form id="formAchat" class="space-y-3">
+                        <div>
+                            <label class="block text-xs font-medium text-slate-300 mb-1">Sélectionner un Forfait</label>
+                            <select id="forfaitSelect" required class="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-lg text-sm text-white focus:outline-none focus:border-emerald-500">
+                                <option value="" disabled selected>-- Choisir une offre --</option>
+                                
+                                <!-- GROUPE 1 : QUOTA DE VOLUME -->
+                                <optgroup label="--- Forfaits à Quota de Volume ---">
+                                    <option value="MINI" data-price="50">MICKE Mini (2h / 500 Mo) - 50 F</option>
+                                    <option value="EXPRESS" data-price="100">MICKE Express (5h / 1,5 Go) - 100 F</option>
+                                    <option value="JOURNEE" data-price="150">MICKE Journée (24h / 4 Go) - 150 F</option>
+                                    <option value="4JOURS" data-price="400">MICKE 4 Jours (4 jours / 15 Go) - 400 F</option>
+                                    <option value="SEMAINE" data-price="800">MICKE Semaine (7 jours / 35 Go) - 800 F</option>
+                                    <option value="MENSUEL" data-price="2500">MICKE Mensuel (30 jours / 120 Go) - 2 500 F</option>
+                                </optgroup>
+
+                                <!-- GROUPE 2 : ILLIMITÉS -->
+                                <optgroup label="--- Forfaits Illimités (Sans quota) ---">
+                                    <option value="ILLIMITE_12H" data-price="150">MICKE Illimité 12H - 150 F</option>
+                                    <option value="ILLIMITE_24H" data-price="300">MICKE Illimité 24H - 300 F</option>
+                                    <option value="ILLIMITE_36H" data-price="400">MICKE Illimité 36H - 400 F</option>
+                                    <option value="ILLIMITE_7J" data-price="1000">MICKE Illimité 7J - 1 000 F</option>
+                                    <option value="ILLIMITE_30J" data-price="3000">MICKE Illimité 30J - 3 000 F</option>
+                                </optgroup>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-medium text-slate-300 mb-1">Numéro de téléphone (Mobile Money)</label>
+                            <input type="tel" id="phoneInput" required placeholder="Ex: 0197000000" 
+                                class="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-lg text-sm text-white focus:outline-none focus:border-emerald-500">
+                        </div>
+
+                        <button type="submit" id="btnPayer" class="w-full bg-cyan-600 hover:bg-cyan-500 text-white font-medium py-2.5 rounded-lg text-sm transition-all shadow-lg shadow-cyan-600/20">
+                            Payer et obtenir mon ticket
+                        </button>
+                    </form>
+                </div>
+
+                <div id="loader" class="hidden text-center text-xs text-cyan-400 mt-3 animate-pulse">
+                    Redirection vers la passerelle de paiement sécurisée...
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- Pied de page -->
+    <footer class="text-center py-4 text-xs text-slate-500 border-t border-slate-800">
+        Propulsé par <span class="text-slate-400 font-semibold">MICKE TECHNOLOGY</span> &copy; 2026
+    </footer>
+
+    <!-- Lien vers le fichier JavaScript externe -->
+    <script src="script.js"></script>
+</body>
+</html>
